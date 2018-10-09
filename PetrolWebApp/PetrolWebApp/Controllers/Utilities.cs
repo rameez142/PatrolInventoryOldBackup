@@ -29,8 +29,7 @@ namespace PatrolWebApp.Controllers
             {
                 foreach (PropertyInfo pro in temp.GetProperties())
                 {
-                    //in case you have a enum/GUID datatype in your model
-                    //We will check field's dataType, and convert the value in it.
+                    
                     if (pro.Name == column.ColumnName)
                     {
                         try
