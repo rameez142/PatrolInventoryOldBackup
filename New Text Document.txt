@@ -1,0 +1,21 @@
+CREATE TABLE users(
+   ID INT PRIMARY KEY      NOT NULL,
+   userid           CHAR(50) NOT NULL,
+   pswd         INT      NOT NULL,
+   savedby  char(50) not null,
+   saveddate   timestamp,
+   username char(50),
+   usertype  char(10)
+);
+
+select * from users;
+
+commit;
+create table PatrolCar(
+ahwaid char(50),
+platenumber char(50),
+type char(50),
+vinnumber char(50),
+rental char(50),
+defective char(50));
+

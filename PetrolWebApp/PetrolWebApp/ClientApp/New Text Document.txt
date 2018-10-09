@@ -1,0 +1,60 @@
+
+CREATE TABLE Devices(
+	ID integer NULL,
+	AhwalID integer NULL,
+	OrgID integer NULL,
+	DeviceNumber nchar(50) NULL,
+	Model nchar(50) NULL,
+	Type nchar(50) NULL,
+	Defective integer  NULL,
+	Rental integer NULL,
+	BarCode nchar(50) NULL
+) ;
+
+DROP TABLE DevicesCheckInOut
+CREATE TABLE DevicesCheckInOut(
+DeviceCheckInOutID integer NULL,
+CheckInOutStateID integer NULL,
+DeviceID integer NULL,
+PersonID integer NULL,
+OrgID integer NULL,
+SavedTime TimeStamp); 
+
+
+CREATE TABLE Persons(
+	PersonID integer  NULL,
+	AhwalID integer NOT NULL,
+	MilNumber integer NOT NULL,
+	RankID int NOT NULL,
+	Name nchar(500) NULL,
+	Mobile nchar(50) NULL,
+	FixedCallerID nchar(50) NULL,
+	OrgID integer NULL
+);
+
+insert into Persons values (1,1,'51669',1,'Test','11111','',1);
+
+insert into DevicesCheckInOut values (1,1,1,1,1,CURRENT_TIMESTAMP);
+
+insert into Devices values (1,1,1,'1234','2011','PATROL',0,0,'PAT123456');
+commit;
+
+CREATE TABLE CheckInOutStates(
+	CheckInOutStateID integer NOT NULL,
+	Name nchar(500) NOT NULL)
+
+
+
+SELECT        DeviceCheckInOutID, CheckInOutStates.Name AS StateName, Ahwal.AhwalID, Ahwal.Name AS AhwalName, PatrolCars.PlateNumber, PatrolCars.Model, PatrolCars.Type, Persons.MilNumber, 
+                         Ranks.Name AS PersonRank, Persons.Name AS PersonName, PatrolCheckInOut.TimeStamp, CheckInOutStates.CheckInOutStateID
+FROM            Ahwal INNER JOIN
+                         PatrolCars ON Ahwal.AhwalID = PatrolCars.AhwalID INNER JOIN
+                         PatrolCheckInOut ON PatrolCars.PatrolID = PatrolCheckInOut.PatrolID INNER JOIN
+                         CheckInOutStates ON PatrolCheckInOut.CheckInOutStateID = CheckInOutStates.CheckInOutStateID INNER JOIN
+                         Persons ON Ahwal.AhwalID = Persons.AhwalID AND PatrolCheckInOut.PersonID = Persons.PersonID INNER JOIN
+                         Ranks ON Persons.RankID = Ranks.RankID
+WHERE        (Ahwal.AhwalID IN
+                             (SELECT        AhwalID
+                               FROM            UsersRolesMap
+                               WHERE        (UserID = @UserID) AND (UserRoleID = @UserRoleID)))
+ORDER BY PatrolCheckInOut.TimeStamp
